@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 class HyperCubeFormula{
   
   public static final String lineSeparator = "\n";
@@ -60,6 +62,49 @@ class HyperCubeFormula{
     declareSection = declareSection + numClauses + lineSeparator;
     
     return declareSection + diffConstraintSection + limitConstraintSection;
+  }
+  
+  //Generate the formula, but exclude all elements from exclusive list
+  public static String getExHyperCubeFormula(String varPrefix, int dim, int maxDistance, int maxColour, String[] exclusiveList){
+    String declareSection = "";
+    String diffConstraintSection = "";
+    String limitConstraintSection  = "";
+    int numVar = (int)Math.pow(2,dim);
+    int maxColourDim = Integer.toString(maxColour-1,2).length();
+    
+    int numClauses = 0;
+    String[] tempArr;
+    
+    for (int i = 0; i < numVar; i++){
+    	if (Arrays.asList(exclusiveList).contains(""+i)) continue;
+      for (int j = i+1; j < numVar; j++){
+        if(Arrays.asList(exclusiveList).contains(""+j)) continue;
+        if (getDistance(CNFConverter.toBinary(i,dim),CNFConverter.toBinary(j,dim)) <= maxDistance){
+          tempArr = CNFConverter.getDiffFormula(varPrefix + CNFConverter.toBinary(i,dim),varPrefix + CNFConverter.toBinary(j,dim),maxColourDim);
+          diffConstraintSection = diffConstraintSection + flattenArr(tempArr);
+          numClauses = numClauses + tempArr.length;
+        }
+      }
+    }
+    
+    for (int i = 0; i < numVar; i++){
+    	if (Arrays.asList(exclusiveList).contains(""+i)) continue;
+      tempArr = CNFConverter.getLeqFormula(varPrefix + CNFConverter.toBinary(i,dim),maxColour - 1,maxColourDim);
+      limitConstraintSection = limitConstraintSection + flattenArr(tempArr);
+      numClauses = numClauses + tempArr.length;
+    }
+
+    declareSection = declareSection + dim + tokenSeparator + maxColour + tokenSeparator + varPrefix + lineSeparator;
+    for (int i = 0;i < numVar; i++){
+    	if (Arrays.asList(exclusiveList).contains(i)) continue;
+      for (int j = 0; j < maxColourDim; j++){
+        declareSection = declareSection + varPrefix + CNFConverter.toBinary(i,dim) + varSeparator + j + lineSeparator;
+      }
+    }
+    
+    declareSection = declareSection + numClauses + lineSeparator;
+    
+    return declareSection + diffConstraintSection + limitConstraintSection;  	
   }
 }
 

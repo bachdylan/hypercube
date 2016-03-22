@@ -106,6 +106,23 @@ class FileManager{
       e.printStackTrace();
     }
   }
+  
+  public static String getExHypercubeFormulaFromFile(String inputFile, String varPrefix, int dim, int maxDistance, int maxColour){
+  	try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))){
+  		int size = Integer.parseInt(reader.readLine());
+  		String[] exclusiveList = new String[size];
+  		for (int i=0;i<size;i++){
+  			exclusiveList[i] = reader.readLine();
+  		}
+  		reader.close();
+  		return HyperCubeFormula.getExHyperCubeFormula(varPrefix,dim,maxDistance,maxColour,exclusiveList);
+  		
+  	}catch (IOException e){
+  	  e.printStackTrace();
+  	}
+  	
+  	return "";
+ }
  /*
   public static void extractFromModel(String modelFile, String mapFile, String outputFile){
   	try (BufferedReader modelReader = new BufferedReader(new FileReader(modelFile))){

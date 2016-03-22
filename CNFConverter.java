@@ -87,11 +87,32 @@ class CNFConverter{
     return result;
   }
   
+  //Special case for leq formula where the max colour = 12 and dim = 4
+  public static String[] getLeq12Formula(String var){
+  	
+  	String[] result = new String[2];
+  	result[0] = negation + var + varSeparator + 0 + tokenSeparator + negation + var + varSeparator + 1 + tokenSeparator + negation + var + varSeparator + 2;
+  	result[1] = negation + var + varSeparator + 0 + tokenSeparator + negation + var + varSeparator + 1 + tokenSeparator + negation + var + varSeparator + 3;
+  	return result;
+  }
+  
+  //Special case for leq formula where the max colour = 11 and dim = 4
+  public static String[] getLeq11Formula(String var){
+  	
+  	String[] result = new String[1];
+  	result[0] = negation + var + varSeparator + 0 + tokenSeparator + negation + var + varSeparator + 1;
+  	return result;
+  }
+  
   public static String[] getLeqFormula(String var, int num, int dim){
+    
+    if (num == 12 && dim == 4) return getLeq12Formula(var);
+    if (num == 11 && dim == 4) return getLeq11Formula(var);
     
     int limit = (int)Math.pow(2,dim);
     String[] tempF = new String[1];
     String[] result = new String[0];
+    
     for (int i = num + 1; i < limit; i++){
       tempF[0] = getDiffFormula(var,i,dim);
       result = combineArrs(result,tempF);
