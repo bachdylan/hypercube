@@ -109,6 +109,7 @@ class FileManager{
   
   public static String getExHypercubeFormulaFromFile(String inputFile, String varPrefix, int dim, int maxDistance, int maxColour){
   	try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))){
+  		reader.readLine();
   		int size = Integer.parseInt(reader.readLine());
   		String[] exclusiveList = new String[size];
   		for (int i=0;i<size;i++){
@@ -276,9 +277,11 @@ class FileManager{
   }
   
   public static void main(String[] args){
-    writeToFile(HyperCubeFormula.getHyperCubeFormula("v",9,2,13),"9-2-13.prob");
-    convertToDIMACSFile("9-2-13.prob","9-2-13.cnf","9-2-13.map");
-    //extractFromModel("7-2-8.model","7-2-8.colour",7,3);
-    //System.out.println(checkValidColouringFromFile("7-2-8.colour",7,2,8));
+  	
+  	for (int i= 13;i<=14;i++){
+  		writeToFile(HyperCubeFormula.getHyperCubeFormula("v",8,2,i),"8-2-" + i + ".prob");
+  		convertToDIMACSFile("8-2-" + i + ".prob","8-2-" + i + ".cnf","8-2-" + i + ".map");
+  	}
+	
   }
 }
